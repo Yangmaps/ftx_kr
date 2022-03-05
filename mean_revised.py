@@ -14,26 +14,26 @@
 #!pip install pandas
 """
 
-# Config Session
+# 세션 구성
 
 import ccxt
 import json
 import pandas as pd
 import time
 
-# api and secret
+# apk와 비밀 키 (ftx 사이트에서 발급 가능)
 
-apiKey = ''         #input("Enter API Key:")      
-secret = ''         #input("Enter Secret Key:")
-subaccount = ''                                      #input("Enter Sub Account Name or 0 for Main:")
+apiKey = ''         #input("api키를 치세요:")      
+secret = ''         #input("비밀 코드를 치세요:")
+subaccount = ''                                      #input("서브 계정 이름 또는 메인 계정의 경우 0 입력:")
 
 
-# Exchange Detail
+# 교환 세부 정보
 exchange = ccxt.ftx({
     'apiKey' : apiKey ,'secret' : secret ,'enableRateLimit': True
 })
 
-# Sub Account Check
+# 서브 계정 체크
 
 if subaccount == "0":
   print("This is Main Account")
@@ -42,11 +42,11 @@ else:
    'FTX-SUBACCOUNT': subaccount,
   }
 
-# Global Variable Setting
+# 전세계 변수 설정
 pair = 'BTC-PERP' # 자기가 원하는 코인
 tf = '5m'
 
-# Get Price Hist Data
+# 가격 기록 데이터 가져오기
 
 def priceHistdata():
   
@@ -64,7 +64,7 @@ def priceHistdata():
 
   return priceData
   
-# Variable setting for minimum Range and minimum Profit
+# 최소 범위 및 최소 이익에 대한 변수 설정
 buyRecord = []
 minimumRange = 10
 minimumProfit = 30
@@ -117,10 +117,10 @@ def sendBuy():
   postOnly =  False                       # 포지션을 MAKER로만 배치합니다.
   ioc = False                             
                                           
-  ## Send Order ##
+  ## 주문 요청 ##
   exchange.create_order(pair, types , side, size_order, price)
 
-  ## Show Order Status##
+  ## 주문 상태 표시##
   print("     ")
   showPending()
   print("     ")
@@ -136,10 +136,10 @@ def sendSell():
   postOnly =  False                       # 포지션을 MAKER로만 배치합니다.
   ioc = False                             
 
-  ## Send Order ##
+  ## 주문  ##
   exchange.create_order(pair, types , side, size_order, price)
 
-  ## Show Order Status##
+  ## 주문 상태 표시##
   print("     ")
   showPending()
   print("     ")
@@ -157,11 +157,11 @@ def writeOrder():
     for ord in buyRecord:
       f.write(str(ord) +"\n")
 
-# LOGIC SESSION
+# 논리 세션
 
 def checkBuycondition():
 
-  # Buy Condition
+  # 구매 조건
   if getPrice() == buySignal and len(buyRecord) <= 30 and buyRecord.count(buySignal) < 1:
     if (minOrder - getPrice()) > minimumRange or (getPrice() - maxOrder) > 10 or len(buyRecord) < 1 :
       sendBuy()
@@ -178,7 +178,7 @@ def checkBuycondition():
 
 def checkSellcondition():
 
-  # Sell Signal function
+  # 신호 판매 함수
   if len(buyRecord) > 0:
     if getPrice() <= sellSignal and getPrice() - minOrder > 0 :
       print('sell signal triggered at ' + str(sellSignal)) 
@@ -198,7 +198,7 @@ def checkSellcondition():
 
 
 
-# Execute Session
+# 세션 실행
 
 while True:
   buyRecord = []
